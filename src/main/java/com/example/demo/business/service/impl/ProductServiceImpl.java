@@ -18,7 +18,12 @@ import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
 
 @Service
 @Slf4j
@@ -54,19 +59,30 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetData(InputStream is) {
+        searchProduct(Collections.emptyMap()).forEach(entityManager::remove);
+        initData(is);
+    }
+
+    private void initData(InputStream inputStream) {
+        Scanner scanner = new Scanner(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8);
+        //skip first line
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
+        while (scanner.hasNextLine()) {
+            Product product = createProductInstance(scanner.nextLine());
+            entityManager.persist(product);
+            log.info("insert {}", product);
+        }
+    }
+
     @EventListener(ApplicationReadyEvent.class)
     public void initDb() throws IOException {
         try (InputStream is = getClass().getResourceAsStream("/data.csv")) {
-            Scanner scanner = new Scanner(Objects.requireNonNull(is), StandardCharsets.UTF_8);
-            //skip first line
-            if (scanner.hasNextLine()) {
-                scanner.nextLine();
-            }
-            while (scanner.hasNextLine()) {
-                Product product = createProductInstance(scanner.nextLine());
-                entityManager.persist(product);
-                log.info("insert {}", product);
-            }
+            initData(is);
         }
     }
 

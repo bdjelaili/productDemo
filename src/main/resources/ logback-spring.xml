@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- use Spring default values -->
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="CUSTOM_FILE_LOG_PATTERN" value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } [%t|%X{request-id}] %-40.40logger{39} : [%X] %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <turboFilter class="ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter">
+        <refreshPeriod>5000</refreshPeriod>
+    </turboFilter>
+
+    <!-- File Appender -->
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${CUSTOM_FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Sentry -->
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <!-- deny all events with a level below WARN -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <root>
+        <appender-ref ref="File"/>
+        <appender-ref ref="Sentry"/>
+    </root>
+</configuration>
