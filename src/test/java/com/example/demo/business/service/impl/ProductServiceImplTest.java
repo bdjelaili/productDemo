@@ -16,7 +16,7 @@ public class ProductServiceImplTest {
 
     private static void assertErrorMessage(String line, String expectedMsg) {
         try {
-            ProductServiceImpl.createProduct(line);
+            ProductServiceImpl.createProductInstance(line);
         } catch (Exception e) {
             Assertions.assertThat(e.getMessage()).isEqualTo(expectedMsg);
             return;

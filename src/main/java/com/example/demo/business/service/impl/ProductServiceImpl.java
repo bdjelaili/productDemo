@@ -63,26 +63,26 @@ public class ProductServiceImpl implements ProductService {
                 scanner.nextLine();
             }
             while (scanner.hasNextLine()) {
-                Product product = createProduct(scanner.nextLine());
+                Product product = createProductInstance(scanner.nextLine());
                 entityManager.persist(product);
                 log.info("insert {}", product);
             }
         }
     }
 
-    static Product createProduct(String line) {
+    static Product createProductInstance(String line) {
         String[] split = line.split(",");
         if (split.length != 5) {
             throw new IllegalStateException("Bad line format : " + line);
         }
-        Product product = initProduct(split);
+        Product product = initProductInstance(split);
         product.setPrice(Float.parseFloat(split[2]));
         product.setStoreAddress(split[3].substring(1));
         product.setCity(split[4].substring(1, split[4].length() - 1));
         return product;
     }
 
-    static private Product initProduct(String[] split) {
+    static private Product initProductInstance(String[] split) {
         String type = split[0];
         switch (type) {
             case Constant.phone:

@@ -14,7 +14,7 @@ class ExceptionHandlers {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
-        log.error("", e);
+        log.error("Error : ", e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
