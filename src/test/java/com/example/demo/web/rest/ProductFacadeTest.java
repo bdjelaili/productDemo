@@ -2,20 +2,14 @@ package com.example.demo.web.rest;
 
 
 import com.example.demo.web.dto.ProductDTO;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
-@SpringBootTest
-@AutoConfigureMockMvc
 public class ProductFacadeTest extends RequestHelper {
 
     @Test

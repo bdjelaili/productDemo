@@ -1,5 +1,6 @@
 package com.example.demo.web.rest;
 
+import com.example.demo.AbstractTest;
 import com.example.demo.web.dto.DataDTO;
 import com.example.demo.web.dto.ProductDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-public class RequestHelper {
+public class RequestHelper extends AbstractTest {
 
     protected MockMvc mockMvc;
 

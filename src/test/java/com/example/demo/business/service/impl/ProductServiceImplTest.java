@@ -1,13 +1,12 @@
 package com.example.demo.business.service.impl;
 
 
+import com.example.demo.AbstractTest;
 import com.example.demo.business.model.Phone;
 import com.example.demo.business.model.Product;
 import com.example.demo.business.model.Subscription;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -16,9 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional(rollbackFor = Exception.class)
-public class ProductServiceImplTest {
+public class ProductServiceImplTest extends AbstractTest {
 
     @Autowired
     private ProductServiceImpl productService;
