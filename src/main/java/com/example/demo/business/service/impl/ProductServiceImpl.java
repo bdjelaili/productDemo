@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<? extends Product> searchProduct(Map<String, String> requestParams) {
+    public List<? extends Product> search(Map<String, String> requestParams) {
         String type = requestParams.get(Constant.type);
         if (type == null) {
             List<Product> result = new ArrayList<>();
@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void resetData(InputStream is) {
-        searchProduct(Collections.emptyMap()).forEach(entityManager::remove);
+        search(Collections.emptyMap()).forEach(entityManager::remove);
         initData(is);
     }
 
@@ -73,10 +73,15 @@ public class ProductServiceImpl implements ProductService {
             scanner.nextLine();
         }
         while (scanner.hasNextLine()) {
-            Product product = createProductInstance(scanner.nextLine());
-            entityManager.persist(product);
-            log.info("insert {}", product);
+            parseAndPersist(scanner.nextLine());
         }
+    }
+
+    Product parseAndPersist(String line) {
+        Product product = parse(line);
+        entityManager.persist(product);
+        log.info("insert {}", product);
+        return product;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -86,19 +91,19 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    static Product createProductInstance(String line) {
+    static Product parse(String line) {
         String[] split = line.split(",");
         if (split.length != 5) {
             throw new IllegalStateException("Bad line format : " + line);
         }
-        Product product = initProductInstance(split);
-        product.setPrice(Float.parseFloat(split[2]));
-        product.setStoreAddress(split[3].substring(1));
-        product.setCity(split[4].substring(1, split[4].length() - 1));
+        Product product = initInstance(split);
+        product.setPrice(Float.parseFloat(split[2].trim()));
+        product.setStoreAddress(split[3].substring(1).trim());
+        product.setCity(split[4].substring(1, split[4].length() - 1).trim());
         return product;
     }
 
-    static private Product initProductInstance(String[] split) {
+    static private Product initInstance(String[] split) {
         String type = split[0];
         switch (type) {
             case Constant.phone:
@@ -108,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
                 if (colorPropertySplit.length != 2) {
                     throw new IllegalStateException("Bad colorProperty format : " + colorProperty);
                 }
-                phone.setColor(colorPropertySplit[1]);
+                phone.setColor(colorPropertySplit[1].trim());
                 return phone;
             case Constant.subscription:
                 Subscription subscription = new Subscription();
@@ -117,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
                 if (gbLimitPropertySplit.length != 2) {
                     throw new IllegalStateException("Bad gbLimitProperty format : " + gbLimitProperty);
                 }
-                subscription.setGbLimit(Long.parseLong(gbLimitPropertySplit[1]));
+                subscription.setGbLimit(Long.parseLong(gbLimitPropertySplit[1].trim()));
                 return subscription;
             default:
                 throw new IllegalStateException("Unknown type : " + type);

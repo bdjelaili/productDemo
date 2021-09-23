@@ -34,7 +34,7 @@ public class ProductFacade {
     @Operation(summary = "search product by parameters : type, min_price, max_price, city, property:color, property:gb_limit_min and property:gb_limit_max")
     @GetMapping(produces = "application/json;charset=UTF-8")
     public DataDTO getAll(@RequestParam Map<String, String> requestParams) {
-        List<ProductDTO> dtos = productService.searchProduct(requestParams)
+        List<ProductDTO> dtos = productService.search(requestParams)
                 .stream()
                 .map(p -> productMapper.map(p, ProductDTO.class))
                 .collect(Collectors.toList());

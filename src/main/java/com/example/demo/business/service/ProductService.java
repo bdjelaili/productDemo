@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface ProductService {
 
-    List<? extends Product> searchProduct(Map<String, String> requestParams);
+    List<? extends Product> search(Map<String, String> requestParams);
 
     void resetData(InputStream inputStream);
 }
